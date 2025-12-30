@@ -1,0 +1,77 @@
+# Ona Automations Configuration
+# For Geekout Vegas 2026 Workshop
+# Docs: https://ona.com/docs/ona/configuration/tasks-and-services/basic-configuration
+
+services:
+  welcome-server:
+    name: Welcome Page Server
+    description: Serves the workshop welcome page on port 3000
+    triggeredBy:
+      - postDevcontainerStart
+    commands:
+      start: npx http-server -p 3000 -c-1
+
+tasks:
+  install-deps:
+    name: Install Dependencies
+    description: Install npm packages
+    triggeredBy:
+      - postDevcontainerStart
+    command: npm install
+
+  install-playwright:
+    name: Install Playwright
+    description: Install Playwright Chromium browser
+    dependsOn:
+      - install-deps
+    command: npx playwright install chromium
+
+  install-claude:
+    name: Install Claude Code
+    description: Install Claude Code CLI globally
+    command: npm install -g @anthropic-ai/claude-code
+
+  show-welcome:
+    name: Show Welcome
+    description: Display welcome message in terminal
+    dependsOn:
+      - install-deps
+      - install-playwright
+      - install-claude
+    command: |
+      echo ""
+      echo "=============================================="
+      echo "  WELCOME TO GEEKOUT VEGAS 2026!"
+      echo "=============================================="
+      echo ""
+      echo "Quick Start:"
+      echo "  1. export ANTHROPIC_API_KEY=your_key"
+      echo "  2. export GEMINI_API_KEY=your_key"
+      echo "  3. Type: claude"
+      echo ""
+      echo "Open http://localhost:3000/welcome.html for instructions"
+      echo ""
+
+# Port configuration with public access
+ports:
+  - port: 3000
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "Welcome Page"
+  - port: 3001
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "Dev Server"
+  - port: 4000
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "API Server"
+  - port: 5000
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "Backend"
+  - port: 5173
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "Vite"
+  - port: 8000
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "Python"
+  - port: 8080
+    admission: "ADMISSION_LEVEL_EVERYONE"
+    name: "HTTP Server"
