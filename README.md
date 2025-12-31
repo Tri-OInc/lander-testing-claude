@@ -16,7 +16,7 @@
   ╚═══╝  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝    ╚══════╝ ╚═════╝ ╚══════╝ ╚═════╝
 ```
 
-## Landing Page Cloner Workshop
+## Landing Page Generator Workshop
 
 > **Build AI-powered tools with Claude Code & Google Gemini**
 
@@ -26,24 +26,9 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/samarhussain90/GeekoutVegas2026)
 
-**Or copy this URL:**
-```
-https://codespaces.new/samarhussain90/GeekoutVegas2026
-```
-
 ---
 
-## What You'll Build
-
-A **Landing Page Cloner** that:
-- Captures any website's design with Playwright
-- Extracts HTML, CSS, and assets automatically
-- Generates AI variations using Google Gemini Flash
-- Deploys variations instantly for A/B testing
-
----
-
-## Setup (After Opening Environment)
+## Setup
 
 ### 1. Set Your API Keys
 
@@ -58,21 +43,22 @@ export GEMINI_API_KEY=your_gemini_key_here
 claude
 ```
 
-### 3. Clone Your First Page
+### 3. Build Together!
 
-Ask Claude:
-> "Clone the landing page at https://example.com"
+Tell Claude what to build and watch the magic happen.
 
 ---
 
-## Workshop Agenda
+## Pre-Installed Dependencies
 
-| Part | Topic |
-|------|-------|
-| **1** | Introduction to Claude Code |
-| **2** | Building the Cloner with Playwright |
-| **3** | AI Variations with Gemini Flash |
-| **4** | Deploy & Test Your Clones |
+| Package | Purpose |
+|---------|---------|
+| **Next.js 14** | React framework with App Router |
+| **React 18** | UI library |
+| **Tailwind CSS** | Styling |
+| **Playwright** | Browser automation & screenshots |
+| **@google/generative-ai** | Gemini API client |
+| **TypeScript** | Type safety |
 
 ---
 
@@ -82,27 +68,6 @@ Ask Claude:
 |---------|-----------------|
 | **Anthropic (Claude)** | [console.anthropic.com](https://console.anthropic.com) |
 | **Google (Gemini)** | [aistudio.google.com](https://aistudio.google.com) |
-
----
-
-## Available Commands
-
-```bash
-npm run clone <url>   # Clone a landing page
-npm run serve         # Preview cloned pages on port 3000
-npm run demo          # See sample output
-claude                # Start Claude Code
-```
-
----
-
-## Pre-Installed Tools
-
-- **Claude Code** - AI pair programmer
-- **Playwright** - Browser automation
-- **Node.js 20** - JavaScript runtime
-- **TypeScript** - Type-safe JavaScript
-- **Google Generative AI** - Gemini integration
 
 ---
 

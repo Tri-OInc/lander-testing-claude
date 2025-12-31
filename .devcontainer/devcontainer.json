@@ -74,6 +74,6 @@
     "visibility": "public"
   },
 
-  "postCreateCommand": "npm install && npx playwright install chromium && npm run prebuild",
+  "postCreateCommand": "npm install && npx playwright install chromium",
   "postStartCommand": "echo '✅ Ready! Type claude to start.'"
 }
