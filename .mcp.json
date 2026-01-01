@@ -2,18 +2,16 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"],
+      "args": ["@playwright/mcp@latest", "--headless"],
       "env": {}
     },
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
-      "env": {}
-    },
-    "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "env": {}
+      "env": {
+        "PUPPETEER_LAUNCH_OPTIONS": "{\"headless\": true, \"args\": [\"--no-sandbox\", \"--disable-setuid-sandbox\"]}",
+        "ALLOW_DANGEROUS": "true"
+      }
     }
   }
 }
