@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Cloner - Candy Factory Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cosmic-void: #0a0612;
+      --deep-purple: #1a0a2e;
+      --candy-pink: #ff2d95;
+      --candy-pink-glow: #ff2d9580;
+      --electric-cyan: #00f5d4;
+      --electric-cyan-glow: #00f5d480;
+      --lime-pop: #9eff00;
+      --lime-pop-glow: #9eff0060;
+      --golden-fizz: #ffd000;
+      --golden-fizz-glow: #ffd00060;
+      --warning-orange: #ff8c00;
+      --error-red: #ff3366;
+      --grape-soda: #8b5cf6;
+      --grape-soda-glow: #8b5cf660;
+      --bubblegum: #f472b6;
+      --glass-bg: rgba(26, 10, 46, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cosmic-void);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated background */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255, 45, 149, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 245, 212, 0.08) 0%, transparent 60%),
+        linear-gradient(180deg, var(--cosmic-void) 0%, var(--deep-purple) 100%);
+    }
+
+    /* Floating candy bubbles */
+    .bubbles {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      animation: float-up linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Scanline overlay */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fade-in-down 0.8s ease-out;
+    }
+
+    @keyframes fade-in-down {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .candy-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--candy-pink), var(--grape-soda), var(--electric-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 80px var(--candy-pink-glow);
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    h1::after {
+      content: 'Website Cloner';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--candy-pink), var(--grape-soda), var(--electric-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: blur(30px);
+      opacity: 0.5;
+      z-index: -1;
+    }
+
+    .tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--electric-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+
+    /* Input section */
+    .input-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      animation: fade-in-up 0.8s ease-out 0.2s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .input-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--candy-pink), var(--electric-cyan), transparent);
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .url-input-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .url-input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .url-input:focus {
+      border-color: var(--electric-cyan);
+      box-shadow:
+        0 0 0 4px var(--electric-cyan-glow),
+        inset 0 0 20px rgba(0, 245, 212, 0.1);
+    }
+
+    .clone-btn {
+      padding: 1rem 2.5rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--candy-pink), var(--grape-soda));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .clone-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--grape-soda), var(--candy-pink));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .clone-btn::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, var(--candy-pink), var(--electric-cyan), var(--lime-pop));
+      border-radius: 14px;
+      z-index: -1;
+      opacity: 0;
+      filter: blur(15px);
+      transition: opacity 0.3s ease;
+    }
+
+    .clone-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px var(--candy-pink-glow);
+    }
+
+    .clone-btn:hover::after {
+      opacity: 0.6;
+    }
+
+    .clone-btn:active {
+      transform: translateY(0);
+    }
+
+    .clone-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .clone-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Progress section */
+    .progress-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      animation: fade-in-up 0.8s ease-out 0.3s both;
+      display: none;
+    }
+
+    .progress-section.active {
+      display: block;
+    }
+
+    .progress-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .progress-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      color: var(--bubblegum);
+    }
+
+    .progress-spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(244, 114, 182, 0.2);
+      border-top-color: var(--bubblegum);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--candy-pink), var(--grape-soda), var(--electric-cyan));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .step {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.4);
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .step.active {
+      color: var(--lime-pop);
+      border-color: var(--lime-pop);
+      box-shadow: 0 0 15px var(--lime-pop-glow);
+    }
+
+    .step.completed {
+      color: var(--electric-cyan);
+      border-color: rgba(0, 245, 212, 0.3);
+    }
+
+    /* Console section */
+    .console-section {
+      flex: 1;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fade-in-up 0.8s ease-out 0.4s both;
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+    }
+
+    .console-header {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .console-dots {
+      display: flex;
+      gap: 8px;
+      margin-right: 1rem;
+    }
+
+    .console-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .console-dot.red { background: var(--error-red); }
+    .console-dot.yellow { background: var(--golden-fizz); }
+    .console-dot.green { background: var(--lime-pop); }
+
+    .console-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .console-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.8;
+      background:
+        linear-gradient(rgba(10, 6, 18, 0.95), rgba(10, 6, 18, 0.95)),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 245, 212, 0.02) 2px,
+          rgba(0, 245, 212, 0.02) 4px
+        );
+    }
+
+    .console-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .console-body::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .console-body::-webkit-scrollbar-thumb {
+      background: var(--grape-soda);
+      border-radius: 4px;
+    }
+
+    .log-entry {
+      margin-bottom: 0.3rem;
+      animation: log-appear 0.3s ease-out;
+    }
+
+    @keyframes log-appear {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .log-time {
+      color: rgba(255, 255, 255, 0.3);
+      margin-right: 0.5rem;
+    }
+
+    .log-type {
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+
+    .log-type.console { color: var(--electric-cyan); }
+    .log-type.network { color: var(--golden-fizz); }
+    .log-type.pipeline { color: var(--bubblegum); }
+    .log-type.error { color: var(--error-red); }
+    .log-type.warning { color: var(--warning-orange); }
+    .log-type.complete { color: var(--lime-pop); }
+
+    .log-message {
+      color: rgba(255, 255, 255, 0.8);
+      word-break: break-all;
+    }
+
+    .empty-console {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    .empty-console-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Result section */
+    .result-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--lime-pop);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      display: none;
+      animation: result-pop 0.5s ease-out;
+      box-shadow: 0 0 40px var(--lime-pop-glow);
+    }
+
+    .result-section.active {
+      display: block;
+    }
+
+    .result-section.error {
+      border-color: var(--error-red);
+      box-shadow: 0 0 40px rgba(255, 51, 102, 0.3);
+    }
+
+    @keyframes result-pop {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .result-icon {
+      font-size: 2rem;
+    }
+
+    .result-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem;
+      color: var(--lime-pop);
+    }
+
+    .result-section.error .result-title {
+      color: var(--error-red);
+    }
+
+    .result-info {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 1rem;
+    }
+
+    .open-clone-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--lime-pop), var(--electric-cyan));
+      border: none;
+      border-radius: 12px;
+      color: var(--cosmic-void);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .open-clone-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px var(--lime-pop-glow);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .input-wrapper {
+        flex-direction: column;
+      }
+
+      .clone-btn {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background layers -->
+  <div class="bg-layer"></div>
+  <div class="bubbles" id="bubbles"></div>
+  <div class="scanlines"></div>
+
+  <!-- Main content -->
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <span class="candy-icon">🍭</span>
+        <h1>Website Cloner</h1>
+      </div>
+      <p class="tagline">// Candy Factory Edition //</p>
+    </header>
+
+    <section class="input-section">
+      <div class="input-wrapper">
+        <div class="url-input-container">
+          <input
+            type="text"
+            class="url-input"
+            id="urlInput"
+            placeholder="Enter URL to clone (e.g., example.com)"
+            autocomplete="off"
+          >
+        </div>
+        <button class="clone-btn" id="cloneBtn">
+          <span>🔮 Clone</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="progress-section" id="progressSection">
+      <div class="progress-header">
+        <div class="progress-spinner"></div>
+        <span class="progress-title" id="progressTitle">Initializing...</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-steps" id="progressSteps">
+        <span class="step" data-step="launch">Launch Browser</span>
+        <span class="step" data-step="navigate">Navigate</span>
+        <span class="step" data-step="scroll">Auto-scroll</span>
+        <span class="step" data-step="snapshot">Snapshot DOM</span>
+        <span class="step" data-step="download">Download Assets</span>
+        <span class="step" data-step="rewrite">Rewrite HTML</span>
+        <span class="step" data-step="save">Save Output</span>
+      </div>
+    </section>
+
+    <section class="console-section">
+      <div class="console-header">
+        <div class="console-dots">
+          <span class="console-dot red"></span>
+          <span class="console-dot yellow"></span>
+          <span class="console-dot green"></span>
+        </div>
+        <span class="console-title">clone-factory-terminal</span>
+      </div>
+      <div class="console-body" id="consoleBody">
+        <div class="empty-console" id="emptyConsole">
+          <div class="empty-console-icon">🍬</div>
+          <p>Enter a URL and click Clone to start</p>
+          <p style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.6;">Logs will appear here in real-time</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="result-section" id="resultSection">
+      <div class="result-header">
+        <span class="result-icon" id="resultIcon">🎉</span>
+        <span class="result-title" id="resultTitle">Clone Complete!</span>
+      </div>
+      <p class="result-info" id="resultInfo"></p>
+      <a class="open-clone-btn" id="openCloneBtn" target="_blank">
+        🚀 Open Cloned Page
+      </a>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Generate floating bubbles
+    function createBubbles() {
+      const container = document.getElementById('bubbles');
+      const colors = ['var(--candy-pink)', 'var(--electric-cyan)', 'var(--lime-pop)', 'var(--grape-soda)', 'var(--golden-fizz)'];
+
+      for (let i = 0; i < 15; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = Math.random() * 20 + 10;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        bubble.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${Math.random() * 100}%;
+          background: radial-gradient(circle at 30% 30%, ${color}, transparent);
+          box-shadow: 0 0 ${size}px ${color};
+          animation-duration: ${Math.random() * 10 + 15}s;
+          animation-delay: ${Math.random() * 10}s;
+        `;
+
+        container.appendChild(bubble);
+      }
+    }
+
+    createBubbles();
+  </script>
+</body>
+</html>

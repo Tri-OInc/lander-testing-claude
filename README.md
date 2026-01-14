@@ -241,6 +241,84 @@ git push -u origin main
 
 ---
 
+## Running the Completed App
+
+Once Claude Code has built the app, run it:
+
+```bash
+# Install dependencies (if not already done)
+npm install
+
+# Start the server
+npm run dev
+```
+
+The app will start at **http://localhost:3000**
+
+### How to Clone a Website
+
+1. Open http://localhost:3000 in your browser
+2. Enter a URL (e.g., `example.com` or `https://stripe.com`)
+3. Click the **Clone** button
+4. Watch the real-time logs stream in the console
+5. When complete, click **Open Cloned Page** to view your clone
+
+### Running the Self-Test
+
+```bash
+npm test
+```
+
+This clones `example.com` and verifies the output is correct.
+
+---
+
+## Project Structure (After Build)
+
+```
+├── server/
+│   ├── index.js      # Express server + WebSocket
+│   ├── cloner.js     # Core cloning pipeline
+│   ├── utils.js      # Helper utilities
+│   └── self-test.js  # Self-test script
+├── public/
+│   ├── index.html    # UI (Willy Wonka themed!)
+│   └── app.js        # Frontend JavaScript
+├── output/           # Generated clones go here
+│   └── example_com_2026-.../
+│       ├── index.html
+│       └── assets/
+└── package.json
+```
+
+---
+
+## Troubleshooting
+
+### Browser Won't Install
+
+```bash
+npx playwright install chromium --with-deps
+```
+
+### Permission Errors on Linux
+
+```bash
+chmod -R 755 ./output
+```
+
+### Port Already in Use
+
+```bash
+PORT=3001 npm run dev
+```
+
+### Clone Looks Broken
+
+Some sites use JavaScript to render content dynamically. The cloner captures the DOM after auto-scrolling, but heavy SPAs may not clone perfectly. This is expected for an MVP!
+
+---
+
 ## Need Help?
 
 Raise your hand or ask in the workshop chat!
